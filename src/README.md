@@ -1,23 +1,7 @@
-# Curated-C Template
 
-This template repository (or repository created from the `reactor-c` template repository)
-contains the following:
+# HelloWorld.lf
 
-* A `context` directory with a large number of examples of Lingua Franca (LF) programs for the
-  C target. These are present to help guide an AI using RAG (Retrieval Augmented Generation)
-  such as cursor.
-
-* A `src` directory with an example LF program to help users get started.
-
-* A `scripts` directory with utilities used to update the context.
-
-* A `Makefile` for formatting LF files, cleaning build artifacts, and updating the context.
-
-This directory contains example Lingua Franca programs demonstrating key language features.
-
-## src/HelloWorld.lf
-
-By convention, LF programs are put in a `src` directory. The `src` directory here
+By convention, LF programs are put in a `src` directory. This `src` directory
 initially contains one program, `HelloWorld.lf`, which demonstrates:
 
 1. **Reactors** - Modular components that encapsulate behavior
@@ -46,14 +30,14 @@ initially contains one program, `HelloWorld.lf`, which demonstrates:
 6. **Timeout** - Program execution duration
    - `timeout: 2 sec` - Program runs for 2 seconds
 
-### How to Compile and Run
+## How to Compile and Run
 
 You need the Lingua Franca compiler (`lfc`) for command-line compilation
 and/or the Visual Studio Code extension for compiling and running within
 VSCode or Cursor.
 See [https://www.lf-lang.org/](https://www.lf-lang.org/) for installation instructions.
 
-### Compile on the Command Line
+## Compile on the Command Line
 
 ```bash
 lfc src/HelloWorld.lf
@@ -64,19 +48,19 @@ This will:
 - Compile the generated code
 - Create an executable in `bin/HelloWorld`
 
-### Run on the Command Line
+## Run on the Command Line
 
 ```bash
 ./bin/HelloWorld
 ```
 
-### Compile and Run in VSCode or Cursor
+## Compile and Run in VSCode or Cursor
 
 In the icon bar, click on the "run" triangle.
 Or from the command palette (Command-Shift P), select
 "Lingua Franca: Build and Run".
 
-### Expected Output
+## Expected Output
 
 ```
 % bin/HelloWorld
@@ -100,19 +84,19 @@ Or from the command palette (Command-Shift P), select
 ---- Elapsed physical time (in nsec): 2,003,074,000
 ```
 
-## Key Concepts
+# Key Concepts
 
-### Logical Time
+## Logical Time
 Lingua Franca uses **logical time** - a deterministic notion of time that ensures reproducible execution.
 Unless the target property `fast` is set to `true`, events are handled only when physical time advances to their logical time, giving real-time behavior.
 
-### Determinism
+## Determinism
 The output is data deterministic. Running the program multiple times will produce identical results with the same logical timestamps.
 
-### Zero-Delay Communication
+## Zero-Delay Communication
 Connections between reactors (like `greeter.greeting -> counter.message`) have zero logical delay by default, meaning the downstream reaction executes at the same logical time.
 
-## Next Steps
+# Next Steps
 
 - Try modifying the timer period
 - Add more reactors to the composition
@@ -120,4 +104,4 @@ Connections between reactors (like `greeter.greeting -> counter.message`) have z
 - Explore physical actions for non-deterministic inputs
 - Try changing the program to a federated one
 
-For many more examples, see the `src` directories within the `context` directory.
+For many more examples, see the `src` directories within the `../context` directory.
