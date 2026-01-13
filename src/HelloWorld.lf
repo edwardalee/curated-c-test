@@ -1,0 +1,113 @@
+/**
+ * Hello World example for Lingua Franca demonstrating key features:
+ * - Timers and periodic execution
+ * - State variables
+ * - Reactors and composition
+ * - Input/output ports and connections
+ * - Reactions triggered by different events
+ * - Startup and shutdown actions
+ * 
+ * This program creates a simple greeting system where:
+ * - A Greeter reactor generates greetings periodically
+ * - A Counter reactor counts and displays messages
+ * - The system runs for 2 seconds
+ */
+target C {
+  timeout: 2 sec
+}
+
+/**
+ * A reactor that generates greetings at startup and periodically.
+ * Demonstrates: timers, state, startup reaction, outputs.
+ */
+reactor Greeter {
+  // Output port for sending greetings
+  // Use `string` type for statically allocated strings,
+  // vs. `char*` for dynamically allocated strings.
+  output greeting: string
+  
+  // Timer that triggers every 500 milliseconds
+  timer t(500 msec, 500 msec)
+  
+  // State variable to track greeting count
+  state count: int = 0
+  
+  // Reaction at startup - executes once when program begins
+  reaction(startup) -> greeting {=
+    lf_set(greeting, "Hello, World! Welcome to Lingua Franca!");
+    // Use `lf_print` vs. `printf` so that federated outputs are identified.
+    // Also, `lf_print` automatically appends a newline.
+    lf_print("=== Greeter started ===");
+  =}
+  
+  // Reaction triggered by the periodic timer
+  reaction(t) -> greeting {=
+    self->count++;
+    if (self->count == 1) {
+      lf_set(greeting, "First periodic greeting!");
+    } else if (self->count == 2) {
+      lf_set(greeting, "Second periodic greeting!");
+    } else {
+      lf_set(greeting, "Greetings from Lingua Franca!");
+    }
+  =}
+  
+  // Reaction at shutdown - executes once when program terminates
+  reaction(shutdown) {=
+    lf_print("=== Greeter shutting down after %d greetings ===", self->count);
+  =}
+}
+
+/**
+ * A reactor that receives and counts messages.
+ * Demonstrates: inputs, state, reactions triggered by inputs.
+ */
+reactor Counter {
+  // Input port for receiving greetings
+  // Use `string` type for statically allocated strings,
+  // vs. `char*` for dynamically allocated strings.
+  input message: string
+  
+  // State to track total messages received
+  state total: int = 0
+  
+  // Reaction triggered when a message is received
+  reaction(message) {=
+    self->total++;
+    lf_print("[Message #%d at %lld ms] %s", 
+           self->total,
+           lf_time_logical_elapsed() / 1000000,  // Convert to milliseconds
+           message->value);
+  =}
+  
+  reaction(shutdown) {=
+    lf_print("=== Counter received %d messages total ===", self->total);
+  =}
+}
+
+/**
+ * Main reactor that composes the system.
+ * Demonstrates: reactor instantiation, connections between reactors.
+ * Change `main` to `federated` to get a federated version of the program.
+ */
+main reactor HelloWorld {
+  // Instantiate the Greeter reactor
+  greeter = new Greeter()
+  
+  // Instantiate the Counter reactor
+  counter = new Counter()
+  
+  // Connect the greeter's output to the counter's input
+  greeter.greeting -> counter.message
+  
+  // Reaction at startup to announce the program.
+  // If the program is federated, this reaction will be executed in both federates.
+  reaction(startup) {=
+    lf_print("");
+    lf_print("╔════════════════════════════════════════════╗");
+    lf_print("║  Lingua Franca Hello World Demo            ║");
+    lf_print("║  Demonstrating reactive programming        ║");
+    lf_print("╚════════════════════════════════════════════╝");
+    lf_print("");
+  =}
+}
