@@ -1,3 +1,9 @@
+# Lingua Franca
+src-gen/
+fed-gen/
+include/
+bin/
+
 # Prerequisites
 *.d
 
